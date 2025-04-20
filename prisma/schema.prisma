@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customers {
+  id            Int @id @default(autoincrement())
+  email         Int @unique
+  name          String
+  lastname      String
+  phone         String
+  createdAt     DateTime
+  services      Services[]
+  califications Califications[]
+  documents     Documents[]
+  supports      Supports[]
+  houses        CustomerHouses[]
+}
+
+model CustomerHouses {
+  id            Int @id @default(autoincrement())
+  customerId    Int
+  lat           Int
+  long          Int
+  address       String
+  distribution  String
+  messure       Int[]
+  type          String
+  customer      Customers @relation(fields: [customerId], references: [id])
+}
+
+model Housemaids {
+  id            Int @id @default(autoincrement())
+  email         Int @unique
+  name          String
+  lastname      String
+  phone         String
+  address       String
+  createdAt     DateTime
+  services      Services[]
+  califications Califications[]
+  schedule      Schedules[]
+  documents     Documents[]
+  supports      Supports[]
+  typeService   TypesServices[]
+}
+
+model Services {
+  id            Int @id @default(autoincrement())
+  customerId    Int
+  housemaidId   Int
+  typeServiceid Int
+  initialDate   DateTime
+  endDate       DateTime
+  createdAt     DateTime
+  status        String
+  calification  Califications?
+  schedule      Schedules?
+  customer      Customers @relation(fields: [customerId], references: [id])
+  housemaid     Housemaids @relation(fields: [housemaidId], references: [id])
+  typeService   TypesServices @relation(fields: [typeServiceid], references: [id])
+}
+
+model TypesServices {
+  id          Int @id @default(autoincrement())
+  title       String
+  description String
+  value       Int
+  createdAt   DateTime
+  services    Services[]
+  housemaids  Housemaids[]
+}
+
+model Califications {
+  id          Int @id @default(autoincrement())
+  housemaidId Int? @unique
+  customerId  Int? @unique
+  serviceId   Int? @unique
+  score       Int
+  comments    String
+  title       String
+  type        String
+  createdAt   Int
+  customer    Customers? @relation(fields: [customerId], references: [id])
+  housemaid   Housemaids? @relation(fields: [housemaidId], references: [id])
+  service     Services? @relation(fields: [serviceId], references: [id])
+}
+
+model Schedules {
+  id          Int @id @default(autoincrement())
+  housemaidId Int
+  serviceId   Int @unique
+  days        String[]
+  hours       String[]
+  createdAt   DateTime
+  housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
+  service     Services @relation(fields: [serviceId], references: [id])   
+}
+
+model Documents {
+  id          Int @id @default(autoincrement())
+  housemaidId Int @unique
+  customerId  Int @unique
+  supportId   Int @unique
+  title       String
+  url         String
+  type        String
+  createdAt   String
+  housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
+  customer    Customers @relation(fields: [customerId], references: [id])
+  Support     Supports @relation(fields: [supportId], references: [id])
+}
+
+model Supports {
+  id          Int @id @default(autoincrement())
+  housemaidId Int
+  customerId  Int
+  tittle      String
+  comments    String
+  status      String
+  createdAt   String
+  documents   Documents[]
+  housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
+  customer    Customers @relation(fields: [customerId], references: [id])
+}
