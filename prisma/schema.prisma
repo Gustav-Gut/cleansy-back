@@ -9,17 +9,19 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Customers {
-  id            Int @id @default(autoincrement())
-  email         Int @unique
+  id            String  @id @default(cuid())
+  email         String  @unique
   name          String
   lastname      String
   phone         String
-  createdAt     DateTime
+  status        CustomerStatus  @default(active)
+  createdAt     DateTime  @default(now())
   services      Services[]
   califications Califications[]
   documents     Documents[]
@@ -27,26 +29,38 @@ model Customers {
   houses        CustomerHouses[]
 }
 
+enum CustomerStatus {
+  active
+  suspended
+}
+
 model CustomerHouses {
-  id            Int @id @default(autoincrement())
-  customerId    Int
+  id            String  @id @default(cuid())
+  customerId    String
   lat           Int
   long          Int
   address       String
   distribution  String
   messure       Int[]
-  type          String
+  type          CustomerHouseType
   customer      Customers @relation(fields: [customerId], references: [id])
 }
 
+enum CustomerHouseType {
+  flat
+  house
+  office
+}
+
 model Housemaids {
-  id            Int @id @default(autoincrement())
-  email         Int @unique
+  id            String  @id @default(cuid())
+  email         String @unique
   name          String
   lastname      String
   phone         String
   address       String
-  createdAt     DateTime
+  status        HousemaidStatus  @default(training)
+  createdAt     DateTime  @default(now())
   services      Services[]
   califications Califications[]
   schedule      Schedules[]
@@ -55,15 +69,24 @@ model Housemaids {
   typeService   TypesServices[]
 }
 
+enum HousemaidStatus {
+  active
+  suspended
+  fired
+  medical_leave
+  vacation
+  training
+}
+
 model Services {
-  id            Int @id @default(autoincrement())
-  customerId    Int
-  housemaidId   Int
-  typeServiceid Int
+  id            String  @id @default(cuid())
+  customerId    String
+  housemaidId   String
+  typeServiceid String
   initialDate   DateTime
   endDate       DateTime
-  createdAt     DateTime
-  status        String
+  createdAt     DateTime @default(now())
+  status        ServiceStatus @default(scheduled)
   calification  Califications?
   schedule      Schedules?
   customer      Customers @relation(fields: [customerId], references: [id])
@@ -71,65 +94,92 @@ model Services {
   typeService   TypesServices @relation(fields: [typeServiceid], references: [id])
 }
 
+enum ServiceStatus {
+  scheduled
+  in_progress
+  suspended
+  finished
+  canceled
+}
+
 model TypesServices {
-  id          Int @id @default(autoincrement())
+  id          String   @id @default(cuid())
   title       String
   description String
   value       Int
-  createdAt   DateTime
+  createdAt   DateTime @default(now())
   services    Services[]
   housemaids  Housemaids[]
 }
 
 model Califications {
-  id          Int @id @default(autoincrement())
-  housemaidId Int? @unique
-  customerId  Int? @unique
-  serviceId   Int? @unique
+  id          String   @id @default(cuid())
+  housemaidId String? @unique
+  customerId  String? @unique
+  serviceId   String? @unique
   score       Int
   comments    String
   title       String
-  type        String
-  createdAt   Int
+  type        CalificationType
+  createdAt   DateTime @default(now())
   customer    Customers? @relation(fields: [customerId], references: [id])
   housemaid   Housemaids? @relation(fields: [housemaidId], references: [id])
   service     Services? @relation(fields: [serviceId], references: [id])
 }
 
+enum CalificationType {
+  customer_review
+  housemaid_review
+}
+
 model Schedules {
-  id          Int @id @default(autoincrement())
-  housemaidId Int
-  serviceId   Int @unique
+  id          String   @id @default(cuid())
+  housemaidId String
+  serviceId   String @unique
   days        String[]
   hours       String[]
-  createdAt   DateTime
+  createdAt   DateTime @default(now())
   housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
   service     Services @relation(fields: [serviceId], references: [id])   
 }
 
 model Documents {
-  id          Int @id @default(autoincrement())
-  housemaidId Int @unique
-  customerId  Int @unique
-  supportId   Int @unique
+  id          String  @id @default(cuid())
+  housemaidId String  @unique
+  customerId  String  @unique
+  supportId   String  @unique
   title       String
   url         String
-  type        String
-  createdAt   String
-  housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
+  type        DocumentType
+  createdAt   DateTime  @default(now())
+  housemaid   Housemaids  @relation(fields: [housemaidId], references: [id])
   customer    Customers @relation(fields: [customerId], references: [id])
-  Support     Supports @relation(fields: [supportId], references: [id])
+  Support     Supports  @relation(fields: [supportId], references: [id])
+}
+
+enum DocumentType {
+  contract
+  id_card
+  resume
+  background_check
+  support_document
 }
 
 model Supports {
-  id          Int @id @default(autoincrement())
-  housemaidId Int
-  customerId  Int
+  id          String  @id @default(cuid())
+  housemaidId String
+  customerId  String
   tittle      String
   comments    String
-  status      String
-  createdAt   String
+  status      SupportStatus @default(new)
+  createdAt   DateTime @default(now())
   documents   Documents[]
   housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
   customer    Customers @relation(fields: [customerId], references: [id])
+}
+
+enum SupportStatus {
+  new
+  in_progress
+  closed
 }
