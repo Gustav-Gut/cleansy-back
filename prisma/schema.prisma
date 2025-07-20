@@ -11,7 +11,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Customers {
@@ -23,7 +22,6 @@ model Customers {
   status        CustomerStatus  @default(active)
   createdAt     DateTime  @default(now())
   services      Services[]
-  califications Califications[]
   documents     Documents[]
   supports      Supports[]
   houses        CustomerHouses[]
@@ -62,7 +60,6 @@ model Housemaids {
   status        HousemaidStatus  @default(training)
   createdAt     DateTime  @default(now())
   services      Services[]
-  califications Califications[]
   schedule      Schedules[]
   documents     Documents[]
   supports      Supports[]
@@ -87,7 +84,6 @@ model Services {
   endDate       DateTime
   createdAt     DateTime @default(now())
   status        ServiceStatus @default(scheduled)
-  calification  Califications?
   schedule      Schedules?
   customer      Customers @relation(fields: [customerId], references: [id])
   housemaid     Housemaids @relation(fields: [housemaidId], references: [id])
@@ -112,24 +108,26 @@ model TypesServices {
   housemaids  Housemaids[]
 }
 
-model Califications {
-  id          String   @id @default(cuid())
-  housemaidId String? @unique
-  customerId  String? @unique
-  serviceId   String? @unique
-  score       Int
-  comments    String
-  title       String
-  type        CalificationType
-  createdAt   DateTime @default(now())
-  customer    Customers? @relation(fields: [customerId], references: [id])
-  housemaid   Housemaids? @relation(fields: [housemaidId], references: [id])
-  service     Services? @relation(fields: [serviceId], references: [id])
+model Evaluations {
+  id                String   @id @default(cuid())
+  evaluatedEntity   EvaluatedEntityType
+  evaluatedEntityId String
+  score             Int
+  comments          String
+  title             String
+  type              EvaluationsType
+  createdAt         DateTime @default(now())
 }
 
-enum CalificationType {
+enum EvaluationsType {
   customer_review
   housemaid_review
+}
+
+enum EvaluatedEntityType {
+  housemaid
+  customer
+  service
 }
 
 model Schedules {
