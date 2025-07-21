@@ -6,6 +6,19 @@ import { CreateCustomerDto, UpdateCustomerDto } from './dto/customer.dto';
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async create(data: CreateCustomerDto) {
+    try {
+      return await this.prisma.customers.create({
+        data: data,
+      });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Email already exists');
+      }
+      throw error;
+    }
+  }
+
   async findAll() {
     const customers = await this.prisma.customers.findMany({
       include: {
@@ -63,20 +76,17 @@ export class CustomersService {
     };
   }
 
-  async create(data: CreateCustomerDto) {
+  async update(id: string, updatedData: UpdateCustomerDto) {
     try {
-      return await this.prisma.customers.create({ data });
+      return await this.prisma.customers.update({
+        where: { id },
+        data: updatedData,
+      });
     } catch (error) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('Email already exists');
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Customer with ID ${id} not found`);
       }
+      throw error;
     }
-  }
-
-  update(id: string, data: UpdateCustomerDto) {
-    return this.prisma.customers.update({
-      where: { id },
-      data,
-    });
   }
 }
