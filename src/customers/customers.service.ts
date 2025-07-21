@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto/customer.dto';
 
@@ -9,9 +9,6 @@ export class CustomersService {
   async findAll() {
     const customers = await this.prisma.customers.findMany({
       include: {
-        services: true,
-        documents: true,
-        supports: true,
         houses: true,
       },
     });
@@ -42,12 +39,13 @@ export class CustomersService {
     const customer = await this.prisma.customers.findUnique({
       where: { id },
       include: {
-        services: true,
-        documents: true,
-        supports: true,
         houses: true,
       },
     });
+
+    if (!customer) {
+      throw new NotFoundException(`Customer with ID ${id} not found`);
+    }
 
     const evaluations_avg = await this.prisma.evaluations.aggregate({
       where: {
@@ -65,8 +63,14 @@ export class CustomersService {
     };
   }
 
-  create(data: CreateCustomerDto) {
-    return this.prisma.customers.create({ data });
+  async create(data: CreateCustomerDto) {
+    try {
+      return await this.prisma.customers.create({ data });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Email already exists');
+      }
+    }
   }
 
   update(id: string, data: UpdateCustomerDto) {
