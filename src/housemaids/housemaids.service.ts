@@ -23,7 +23,7 @@ export class HousemaidsService {
     const housemaids = await this.prisma.housemaids.findMany({
       include: {
         services: true,
-        schedule: true,
+        schedules: true,
       },
     });
 
@@ -54,7 +54,7 @@ export class HousemaidsService {
       where: { id },
       include: {
         services: true,
-        schedule: true,
+        schedules: true,
       },
     });
 
