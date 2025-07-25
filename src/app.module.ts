@@ -6,6 +6,7 @@ import { CustomersModule } from './customers/customers.module';
 import { ConfigModule } from '@nestjs/config';
 import { HousemaidsModule } from './housemaids/housemaids.module';
 import { ServicesModule } from './services/services.module';
+import { TypesServicesModule } from './types-services/types-services.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ServicesModule } from './services/services.module';
     CustomersModule,
     HousemaidsModule,
     ServicesModule,
+    TypesServicesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
