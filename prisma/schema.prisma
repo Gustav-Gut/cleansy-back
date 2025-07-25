@@ -59,7 +59,7 @@ model Housemaids {
   status        HousemaidStatus  @default(training)
   createdAt     DateTime  @default(now())
   services      Services[]
-  schedule      Schedules[]
+  schedules     Schedules[]
   supports      Supports[]
   typeService   TypesServices[]
 }
@@ -82,7 +82,6 @@ model Services {
   endDate       DateTime
   createdAt     DateTime @default(now())
   status        ServiceStatus @default(scheduled)
-  schedule      Schedules?
   customer      Customers @relation(fields: [customerId], references: [id])
   housemaid     Housemaids @relation(fields: [housemaidId], references: [id])
   typeService   TypesServices @relation(fields: [typeServiceId], references: [id])
@@ -131,12 +130,24 @@ enum EvaluatedEntityType {
 model Schedules {
   id          String   @id @default(cuid())
   housemaidId String
-  serviceId   String @unique
-  days        String[]
-  hours       String[]
+  dayOfWeek   DayOfWeek
+  startTime   String
+  endTime     String
   createdAt   DateTime @default(now())
   housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
-  service     Services @relation(fields: [serviceId], references: [id])   
+
+  @@unique([housemaidId, dayOfWeek, startTime, endTime])
+  @@index([housemaidId])
+}
+
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
 }
 
 model Documents {
