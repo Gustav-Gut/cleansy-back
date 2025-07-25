@@ -19,7 +19,7 @@ model Customers {
   name          String
   lastname      String
   phone         String
-  status        CustomerStatus  @default(active)
+  status        CustomerStatus  @default(ACTIVE)
   createdAt     DateTime  @default(now())
   services      Services[]
   supports      Supports[]
@@ -27,8 +27,8 @@ model Customers {
 }
 
 enum CustomerStatus {
-  active
-  suspended
+  ACTIVE
+  SUSPENDED
 }
 
 model CustomerHouses {
@@ -44,9 +44,9 @@ model CustomerHouses {
 }
 
 enum CustomerHouseType {
-  flat
-  house
-  office
+  FLAT
+  HOUSE
+  OFFICE
 }
 
 model Housemaids {
@@ -56,7 +56,7 @@ model Housemaids {
   lastname      String
   phone         String
   address       String
-  status        HousemaidStatus  @default(training)
+  status        HousemaidStatus  @default(TRAINING)
   createdAt     DateTime  @default(now())
   services      Services[]
   schedules     Schedules[]
@@ -65,12 +65,12 @@ model Housemaids {
 }
 
 enum HousemaidStatus {
-  active
-  suspended
-  fired
-  medical_leave
-  vacation
-  training
+  ACTIVE
+  SUSPENDED
+  FIRED
+  MEDICAL_LEAVE
+  VACATION
+  TRAINING
 }
 
 model Services {
@@ -81,18 +81,18 @@ model Services {
   initialDate   DateTime
   endDate       DateTime
   createdAt     DateTime @default(now())
-  status        ServiceStatus @default(scheduled)
+  status        ServiceStatus @default(SCHEDULED)
   customer      Customers @relation(fields: [customerId], references: [id])
   housemaid     Housemaids @relation(fields: [housemaidId], references: [id])
   typeService   TypesServices @relation(fields: [typeServiceId], references: [id])
 }
 
 enum ServiceStatus {
-  scheduled
-  in_progress
-  suspended
-  finished
-  canceled
+  SCHEDULED
+  IN_PROGRESS
+  SUSPENDED
+  FINISHED
+  CANCELED
 }
 
 model TypesServices {
@@ -117,14 +117,14 @@ model Evaluations {
 }
 
 enum EvaluationsType {
-  customer_review
-  housemaid_review
+  CUSTOMER_REVIEW
+  HOUSEMAID_REVIEW
 }
 
 enum EvaluatedEntityType {
-  housemaid
-  customer
-  service
+  HOUSEMAID
+  CUSTOMER
+  SERVICE
 }
 
 model Schedules {
@@ -161,11 +161,11 @@ model Documents {
 }
 
 enum DocumentType {
-  contract
-  id_card
-  resume
-  background_check
-  support_document
+  CONTRACT
+  ID_CARD
+  RESUME
+  BACKGROUND_CHECK
+  SUPPORT_DOCUMENT
 }
 
 enum DocumentOwnerType {
@@ -180,14 +180,14 @@ model Supports {
   customerId  String
   tittle      String
   comments    String
-  status      SupportStatus @default(new)
+  status      SupportStatus @default(NEW)
   createdAt   DateTime @default(now())
   housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
   customer    Customers @relation(fields: [customerId], references: [id])
 }
 
 enum SupportStatus {
-  new
-  in_progress
-  closed
+  NEW
+  IN_PROGRESS
+  CLOSED
 }

@@ -30,7 +30,7 @@ export class HousemaidsService {
     const avgByHousemaid = await this.prisma.evaluations.groupBy({
       by: ['evaluatedEntityId'],
       where: {
-        evaluatedEntity: 'housemaid',
+        evaluatedEntity: 'HOUSEMAID',
       },
       _avg: {
         score: true,
@@ -64,7 +64,7 @@ export class HousemaidsService {
 
     const evaluations_avg = await this.prisma.evaluations.aggregate({
       where: {
-        evaluatedEntity: 'housemaid',
+        evaluatedEntity: 'HOUSEMAID',
         evaluatedEntityId: id,
       },
       _avg: {

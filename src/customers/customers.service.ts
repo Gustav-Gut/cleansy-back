@@ -29,7 +29,7 @@ export class CustomersService {
     const avgByCustomer = await this.prisma.evaluations.groupBy({
       by: ['evaluatedEntityId'],
       where: {
-        evaluatedEntity: 'customer',
+        evaluatedEntity: 'CUSTOMER',
       },
       _avg: {
         score: true,
@@ -62,7 +62,7 @@ export class CustomersService {
 
     const evaluations_avg = await this.prisma.evaluations.aggregate({
       where: {
-        evaluatedEntity: 'customer',
+        evaluatedEntity: 'CUSTOMER',
         evaluatedEntityId: id,
       },
       _avg: {
