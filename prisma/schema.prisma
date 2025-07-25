@@ -34,11 +34,11 @@ enum CustomerStatus {
 model CustomerHouses {
   id            String  @id @default(cuid())
   customerId    String
-  lat           Int
-  long          Int
+  latitude      Float
+  longitude     Float
   address       String
-  distribution  String
-  messure       Int[]
+  distribution  Json
+  sizeSqm       Int?
   type          CustomerHouseType
   customer      Customers @relation(fields: [customerId], references: [id])
 }
