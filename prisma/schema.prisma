@@ -100,7 +100,7 @@ model TypesServices {
   id          String   @id @default(cuid())
   title       String
   description String
-  value       Int
+  price       Int
   createdAt   DateTime @default(now())
   services    Services[]
   housemaids  Housemaids[]
