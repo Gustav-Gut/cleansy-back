@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HousemaidsModule } from './housemaids/housemaids.module';
 import { ServicesModule } from './services/services.module';
 import { TypesServicesModule } from './types-services/types-services.module';
+import { CustomerHousesModule } from './customer-houses/customer-houses.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TypesServicesModule } from './types-services/types-services.module';
     HousemaidsModule,
     ServicesModule,
     TypesServicesModule,
+    CustomerHousesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
