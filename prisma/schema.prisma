@@ -22,7 +22,6 @@ model Customers {
   status        CustomerStatus  @default(active)
   createdAt     DateTime  @default(now())
   services      Services[]
-  documents     Documents[]
   supports      Supports[]
   houses        CustomerHouses[]
 }
@@ -61,7 +60,6 @@ model Housemaids {
   createdAt     DateTime  @default(now())
   services      Services[]
   schedule      Schedules[]
-  documents     Documents[]
   supports      Supports[]
   typeService   TypesServices[]
 }
@@ -142,17 +140,13 @@ model Schedules {
 }
 
 model Documents {
-  id          String  @id @default(cuid())
-  housemaidId String  @unique
-  customerId  String  @unique
-  supportId   String  @unique
-  title       String
-  url         String
-  type        DocumentType
-  createdAt   DateTime  @default(now())
-  housemaid   Housemaids  @relation(fields: [housemaidId], references: [id])
-  customer    Customers @relation(fields: [customerId], references: [id])
-  Support     Supports  @relation(fields: [supportId], references: [id])
+  id                String  @id @default(cuid())
+  title             String
+  url               String
+  type              DocumentType
+  documentOwnerType DocumentOwnerType
+  documentOwnerId   String
+  createdAt         DateTime  @default(now())
 }
 
 enum DocumentType {
@@ -163,6 +157,12 @@ enum DocumentType {
   support_document
 }
 
+enum DocumentOwnerType {
+  CUSTOMER
+  HOUSEMAID
+  SUPPORT_TICKET
+}
+
 model Supports {
   id          String  @id @default(cuid())
   housemaidId String
@@ -171,7 +171,6 @@ model Supports {
   comments    String
   status      SupportStatus @default(new)
   createdAt   DateTime @default(now())
-  documents   Documents[]
   housemaid   Housemaids @relation(fields: [housemaidId], references: [id])
   customer    Customers @relation(fields: [customerId], references: [id])
 }
