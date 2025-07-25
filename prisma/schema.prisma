@@ -77,7 +77,7 @@ model Services {
   id            String  @id @default(cuid())
   customerId    String
   housemaidId   String
-  typeServiceid String
+  typeServiceId String
   initialDate   DateTime
   endDate       DateTime
   createdAt     DateTime @default(now())
@@ -85,7 +85,7 @@ model Services {
   schedule      Schedules?
   customer      Customers @relation(fields: [customerId], references: [id])
   housemaid     Housemaids @relation(fields: [housemaidId], references: [id])
-  typeService   TypesServices @relation(fields: [typeServiceid], references: [id])
+  typeService   TypesServices @relation(fields: [typeServiceId], references: [id])
 }
 
 enum ServiceStatus {
