@@ -9,6 +9,7 @@ import { ServicesModule } from './services/services.module';
 import { TypesServicesModule } from './types-services/types-services.module';
 import { CustomerHousesModule } from './customer-houses/customer-houses.module';
 import { SchedulesModule } from './schedules/schedules.module';
+import { EvaluationsModule } from './evaluations/evaluations.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { SchedulesModule } from './schedules/schedules.module';
     TypesServicesModule,
     CustomerHousesModule,
     SchedulesModule,
+    EvaluationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
