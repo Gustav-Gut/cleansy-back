@@ -109,11 +109,15 @@ model Evaluations {
   id                String   @id @default(cuid())
   evaluatedEntity   EvaluatedEntityType
   evaluatedEntityId String
+  evaluatorId       String
   score             Int
   comments          String
   title             String
   type              EvaluationsType
   createdAt         DateTime @default(now())
+
+  @@index([evaluatedEntity, evaluatedEntityId])
+  @@index([evaluatorId])
 }
 
 enum EvaluationsType {
